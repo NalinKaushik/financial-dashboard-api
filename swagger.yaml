@@ -67,9 +67,6 @@ components:
         id:
           type: string
           format: uuid
-        name:
-          type: string
-          example: Admin User
         email:
           type: string
           format: email
@@ -97,9 +94,6 @@ components:
       type: object
       required: [name, email, password]
       properties:
-        name:
-          type: string
-          example: Jane Doe
         email:
           type: string
           format: email

@@ -1,5 +1,10 @@
 import * as AuthService from '../services/auth.service.js';
 
+// controller function responsible for reading the request body and act according to that
+// (i.e., calling the service or throwing an error)
+
+
+
 export const register = async (req, res, next) => {
   try {
     const newUser = await AuthService.registerUser(req.body);
@@ -14,6 +19,7 @@ export const register = async (req, res, next) => {
   }
 };
 
+// 
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;

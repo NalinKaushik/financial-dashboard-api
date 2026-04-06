@@ -1,47 +1,60 @@
 import { prisma } from '../config/db.js';
 
-export const getFinancialSummary = async (month, year) => {
-  // 1. Build the filter logic
-  let whereClause = {};
+/**
+ * 📊 Dashboard Aggregation Service
+ * Uses SQL-level grouping for performance and accuracy.
+ */
+export const getDashboardStats = async (userId, month, year) => {
+  const startDate = new Date(year, month - 1, 1);
+  const endDate = new Date(year, month, 1);
 
-  if (month && year) {
-    // JavaScript dates are 0-indexed for months (January is 0, April is 3)
-    // So if the user asks for Month 4 (April), we do 4 - 1
-    const startDate = new Date(year, month - 1, 1); 
-    
-    // The end date is exactly the 1st of the NEXT month
-    const endDate = new Date(year, month, 1); 
-
-    whereClause = {
-      date: {
-        gte: startDate, // Greater than or equal to the 1st of the requested month
-        lt: endDate     // Less than the 1st of the NEXT month
-      }
-    };
-  }
-
-  // 2. Fetch with the new filter
-  const transactions = await prisma.transaction.findMany({
-    where: whereClause
+  // 1. Get Totals via Aggregation
+  const totals = await prisma.transaction.groupBy({
+    by: ['type'],
+    where: {
+      createdBy: userId,
+      isDeleted: false,
+      date: { gte: startDate, lt: endDate }
+    },
+    _sum: { amount: true }
   });
 
-  // 3. The math stays exactly the same!
-  let totalIncome = 0;
-  let totalExpense = 0;
-
-  transactions.forEach((tx) => {
-    const amount = Number(tx.amount); 
-    if (tx.type === 'INCOME') {
-      totalIncome += amount;
-    } else if (tx.type === 'EXPENSE') {
-      totalExpense += amount;
-    }
+  // 2. Get Category Breakdown (The "Chart" data)
+  const categoryData = await prisma.transaction.groupBy({
+    by: ['category'],
+    where: {
+      createdBy: userId,
+      isDeleted: false,
+      date: { gte: startDate, lt: endDate }
+    },
+    _sum: { amount: true },
+    orderBy: { _sum: { amount: 'desc' } }
   });
+
+  // 3. Get Recent Activity (Top 5)
+  const recentActivity = await prisma.transaction.findMany({
+    where: {
+      createdBy: userId,
+      isDeleted: false
+    },
+    orderBy: { date: 'desc' },
+    take: 5
+  });
+
+  // 4. Format numbers for clean JSON response
+  const income = Number(totals.find(t => t.type === 'INCOME')?._sum.amount || 0);
+  const expense = Number(totals.find(t => t.type === 'EXPENSE')?._sum.amount || 0);
 
   return {
-    totalIncome,
-    totalExpense,
-    netBalance: totalIncome - totalExpense,
-    totalTransactions: transactions.length
+    summary: {
+      totalIncome: income,
+      totalExpense: expense,
+      netBalance: income - expense
+    },
+    categoryBreakdown: categoryData.map(item => ({
+      category: item.category,
+      amount: Number(item._sum.amount)
+    })),
+    recentActivity
   };
 };

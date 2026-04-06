@@ -8,9 +8,9 @@ const router = Router();
 // Protect all user routes with Admin-only access
 router.use(authenticate, authorize('ADMIN'));
 
+router.get('/profile', UserController.getProfile);
 router.get('/:id', authorize('ADMIN'), UserController.getUserById);
 router.delete('/:id', authorize('ADMIN'), UserController.deleteUser);
-router.get('/profile', UserController.getProfile);
 router.get('/', UserController.getAllUsers);
 router.patch('/:id/role', UserController.updateUserRole);
 router.patch('/:id/status', UserController.updateUserStatus);

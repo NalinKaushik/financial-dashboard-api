@@ -2,13 +2,14 @@ import * as UserService from '../services/user.service.js';
 
 export const getProfile = async (req, res) => {
   try {
-    // 1. Extract the ID that the authenticate middleware attached to the request
+
+    // Extracting the ID that the authenticate middleware attached to the request
     const userId = req.user.id;
 
-    // 2. Ask the service for the data
+    // Asking the service for the data
     const user = await UserService.getProfile(userId);
 
-    // 3. Handle the edge case where a token is valid, but the user was deleted
+    // Handle the edge case where a token is valid, but the user was deleted
     if (!user) {
       return res.status(404).json({ 
         success: false, 
@@ -16,12 +17,13 @@ export const getProfile = async (req, res) => {
       });
     }
 
-    // 4. Return the data
+    // Return the data
     return res.status(200).json({ 
       success: true, 
       data: user 
     });
 
+    // error handling
   } catch (error) {
     console.error("Get Profile Error:", error);
     return res.status(500).json({ 
