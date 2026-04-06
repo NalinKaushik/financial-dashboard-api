@@ -24,7 +24,7 @@ This project demonstrates advanced backend engineering principles including Laye
 * **Documentation:** Swagger UI (OpenAPI 3.0)
 
 ## 📁 Project Structure
-
+```text
 ├── prisma/
 │   └── schema.prisma         # Database schema and models
 ├── src/
@@ -42,3 +42,4 @@ This project demonstrates advanced backend engineering principles including Laye
 ├── prisma.config.ts                 # Application entry point
 ├── package.json              # Project dependencies
 └── README.md                 # Project documentations
+```
