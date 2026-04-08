@@ -43,3 +43,19 @@ This project demonstrates advanced backend engineering principles including Laye
 ├── package.json              # Project dependencies
 └── README.md                 # Project documentations
 ```
+## Live Demo & Test Credentials
+
+You can test the live API instantly using the Swagger documentation. To save you time, the database has been seeded with three distinct user roles so you can test the Role-Based Access Control (RBAC) and protected routes.
+
+**Live API Documentation (Swagger):** 🔗 [https://financial-dashboard-api-73l4.onrender.com/api-docs](https://financial-dashboard-api-73l4.onrender.com/api-docs)
+
+### Test Accounts
+Use the `/api/auth/login` endpoint to generate a JWT token for any of these accounts, then click the green **Authorize** button at the top of the Swagger page to inject the token.
+
+| Role | Email | Password | Permissions |
+| :--- | :--- | :--- | :--- |
+| **ADMIN** | `admin@dashboard.com` | `supersecurepassword` | Full access. Can create/delete users and transactions. |
+| **ANALYST** | `analyst@dashboard.com` | `analystpassword` | Read-only access to advanced financial summaries. |
+| **VIEWER** | `newuser@dashboard.com` | `newsecurepassword` | Basic read-only access to their own profile. |
+
+*(Note: If you attempt to hit an Admin-only route like `DELETE /api/transactions/{id}` while authenticated as the Viewer, the API will securely reject the request with a `403 Forbidden` status).*

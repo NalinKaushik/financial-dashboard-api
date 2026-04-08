@@ -87,10 +87,10 @@ components:
         email:
           type: string
           format: email
-          example: test@example.com
+          example: admin@dashboard.com
         password:
           type: string
-          example: Password123!
+          example: supersecurepassword
 
     RegisterInput:
       type: object
@@ -99,10 +99,10 @@ components:
         email:
           type: string
           format: email
-          example: newuser@dashboard.com
+          example: admin@dashboard.com
         password:
           type: string
-          example: newsecurepassword
+          example: supersecurepassword
 
     TransactionInput:
       type: object
