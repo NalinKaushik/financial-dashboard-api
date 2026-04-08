@@ -9,6 +9,8 @@ info:
   version: 1.0.0
 
 servers:
+  - url: https://financial-dashboard-api-73l4.onrender.com/
+    description: Live Production Server
   - url: http://localhost:3000
     description: Local Development Server
 
@@ -85,19 +87,19 @@ components:
         email:
           type: string
           format: email
-          example: admin@dashboard.com
+          example: test@example.com
         password:
           type: string
-          example: supersecurepassword
+          example: Password123!
 
     RegisterInput:
       type: object
-      required: [name, email, password]
+      required: [email, password]
       properties:
         email:
           type: string
           format: email
-          example: jane@dashboard.com
+          example: newuser@dashboard.com
         password:
           type: string
           example: newsecurepassword
@@ -404,7 +406,7 @@ paths:
 
     post:
       summary: Create a new transaction
-      description: Creates a new financial record. Restricted to ADMIN role.
+      description: Creates a new financial record.
       tags:
         - Transactions
       security:
@@ -432,7 +434,7 @@ paths:
   /api/transactions/{id}:
     patch:
       summary: Partially update a transaction
-      description: Update specific fields of an existing transaction. Restricted to ADMIN role.
+      description: Update specific fields of an existing transaction.
       tags:
         - Transactions
       security:
@@ -466,7 +468,7 @@ paths:
 
     delete:
       summary: Soft Delete a transaction
-      description: Hides the transaction by flipping `isDeleted` to true. Data is preserved in the database. Restricted to ADMIN role.
+      description: Hides the transaction by flipping `isDeleted` to true. Data is preserved in the database.
       tags:
         - Transactions
       security:
@@ -488,8 +490,8 @@ paths:
   # -- ANALYTICS --
   /api/analysis/summary:
     get:
-      summary: Retrieve financial summary metrics
-      description: Aggregates total income, expenses, and net balance. Supports month and year filtering.
+      summary: Retrieve full financial dashboard metrics
+      description: Aggregates total income/expenses, returns a category breakdown for charts, and lists recent activity. Supports month and year filtering.
       tags:
         - Analytics
       security:
@@ -521,15 +523,30 @@ paths:
                   data:
                     type: object
                     properties:
-                      totalIncome:
-                        type: number
-                        example: 5500.00
-                      totalExpense:
-                        type: number
-                        example: 1200.50
-                      netBalance:
-                        type: number
-                        example: 4299.50
-                      totalTransactions:
-                        type: integer
-                        example: 15
+                      summary:
+                        type: object
+                        properties:
+                          totalIncome:
+                            type: number
+                            example: 5500.00
+                          totalExpense:
+                            type: number
+                            example: 1200.50
+                          netBalance:
+                            type: number
+                            example: 4299.50
+                      categoryBreakdown:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            category:
+                              type: string
+                              example: "Software Subscriptions"
+                            amount:
+                              type: number
+                              example: 150.00
+                      recentActivity:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Transaction'

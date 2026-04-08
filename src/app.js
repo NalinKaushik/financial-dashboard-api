@@ -1,5 +1,6 @@
 import express from 'express';
 import YAML from 'yamljs';
+import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
 import transactionRoutes from './routes/transaction.routes.js';
@@ -31,6 +32,8 @@ const authLimiter = rateLimit({
 
 
 const app = express();
+
+app.use(cors());
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
