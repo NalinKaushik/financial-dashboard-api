@@ -64,7 +64,9 @@ app.use((req, res, next) => {
     res.status(404).json({success:false,error:'endpoint not found'});
 });
 
-
+app.get('/api/health', (req, res) => {
+    res.status(200).json({ success: true, message: 'API is healthy' });
+});
 // Global Error Handler MUST be the last middleware
 app.use(errorHandler);
 
